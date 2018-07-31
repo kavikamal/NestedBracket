@@ -3,31 +3,45 @@ def check_nested_brackets(filename):
     with open(filename, 'r+') as myfile: 
        exp_list = myfile.read().split('\n')
     result =[]
- 
-    for expressions in exp_list:
-        result.append(check_brackets(expressions))   
+    for exp in exp_list:
+        result.append(check_brackets(exp))   
     return result             
      
-
-def check_brackets( expressions ):
-    print expressions
+def check_brackets( exp ):
+    print exp
     brackets = {'(':')','[':']','{':'}','<':'>','(*':'*)'}
-    brackets_list =[]
+    brackets_list = []
+    flag = False
+    i=0
     pos=0
-    for i, c in enumerate(expressions):
-        pos=i+1         
+    while i<len(exp):  
+        c=exp[i]
+        if c == '(' and exp[i+1]=='*'  and i < len(exp)-1:
+           c+=exp[i+1] 
+           i+=1
+           flag=True 
+        elif c == '*' and flag and i < len(exp)-1 and exp[i+1]==')' :  
+           c+=exp[i+1] 
+           i+=1
+           pos=pos-1
+           flag=False    
         if c in brackets:
-            brackets_list.append(c)  
+            brackets_list.append(c)
+             
         elif c in brackets.values():
+            pos=i-1
             open_bracket= next((k for k, v in brackets.items() if v == c),None)
-            print(c, ' - ', open_bracket)
-            print brackets_list[-1],open_bracket
             if open_bracket and brackets_list[-1] != open_bracket:
-                return 'NOo '+ str(i)     
+                return 'NO' + str(pos)   
             else:
-                brackets_list.pop()    
+                brackets_list.pop()  
+        i+=1
+                 
+    # Opening brackets but no closing
     if len(brackets_list)>0:
-        return 'NO ' + str(pos+1)  
+        # Find index of last item in brackets_list
+        # Reverse search to find position
+        return 'NO ' + str(pos)
     return 'YES'    
 
 # Provided main(), calls mimic_dict() and mimic()
