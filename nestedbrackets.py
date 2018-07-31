@@ -18,29 +18,34 @@ def check_brackets( exp ):
         c=exp[i]
         if c == '(' and exp[i+1]=='*'  and i < len(exp)-1:
            c+=exp[i+1] 
+           pos+=1
            i+=1
            flag=True 
         elif c == '*' and flag and i < len(exp)-1 and exp[i+1]==')' :  
            c+=exp[i+1] 
+           pos+=1
            i+=1
-           pos=pos-1
-           flag=False    
+           flag=False  
+
         if c in brackets:
-            brackets_list.append(c)
-             
-        elif c in brackets.values():
-            pos=i-1
+            if c != '(*':
+               pos+=1
+            brackets_list.append(c)     
+        elif c in brackets.values():  
             open_bracket= next((k for k, v in brackets.items() if v == c),None)
             if open_bracket and brackets_list[-1] != open_bracket:
-                return 'NO' + str(pos)   
+                return 'NOooo' + str(pos)   
             else:
                 brackets_list.pop()  
+        else:
+          pos+=1  
         i+=1
-                 
+                     
     # Opening brackets but no closing
     if len(brackets_list)>0:
         # Find index of last item in brackets_list
         # Reverse search to find position
+        pos=pos+1
         return 'NO ' + str(pos)
     return 'YES'    
 
